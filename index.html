@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防災ウェブサイト - トップページ</title>
+    <style>
+        /* 基本スタイル */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Helvetica Neue", Arial, Meiryo, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ヘッダー */
+        header {
+            background-color: #005a9c;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 5px solid #ffc400;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        /* セクション共通 */
+        .section {
+            background-color: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #005a9c;
+            padding-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        /* リアルタイム警報エリア */
+        #alerts .alert-box {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .alert-warning { /* 注意報 */
+            background-color: #fff3cd;
+            border-left: 5px solid #ffeeba;
+            color: #856404;
+        }
+        .alert-danger { /* 警報 */
+            background-color: #f8d7da;
+            border-left: 5px solid #f5c6cb;
+            color: #721c24;
+        }
+        .alert-success { /* 発表なし */
+            background-color: #d4edda;
+            border-left: 5px solid #c3e6cb;
+            color: #155724;
+        }
+
+        /* 避難行動支援（マップへのリンク） */
+        #evacuation-action .action-button {
+            display: block;
+            width: 100%;
+            padding: 25px 20px;
+            background-color: #d93025;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            box-sizing: border-box;
+        }
+        #evacuation-action .action-button:hover {
+            background-color: #b0261d;
+        }
+        
+        /* 備えのメニュー */
+        #preparedness-menu .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .menu-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .menu-card:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+        .menu-card h3 {
+            margin-top: 10px;
+            color: #005a9c;
+        }
+        
+        /* ---------------------------------
+         * 追加: スマホ用 固定フッターボタン
+         * --------------------------------- */
+        #fab-map-button {
+            display: none; /* デスクトップでは非表示 */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #d93025; /* 既存のボタンと色を合わせる */
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+            box-sizing: border-box; /* paddingを含めて幅100%にする */
+        }
+
+        /* スマートフォン用のスタイル */
+        @media (max-width: 600px) {
+            body {
+                /* 追加: 固定フッターボタンがコンテンツに
+                   重ならないように余白を追加 (ボタンの高さ分) */
+                padding-bottom: 80px; 
+            }
+            .container {
+                padding: 10px;
+            }
+            header h1 {
+                font-size: 1.5em;
+            }
+            .section h2 {
+                font-size: 1.2em;
+            }
+
+            /* 変更: 既存のアクションボタンセクションは非表示にする */
+            #evacuation-action {
+                display: none;
+            }
+            
+            #preparedness-menu .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* 追加: スマホ用固定フッターボタンを表示し、
+               スタイルを調整 */
+            #fab-map-button {
+                display: block;
+                font-size: 1.2em;
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>防災ウェブサイト</h1>
+    </header>
+
+    <main class="container">
+
+        <section id="alerts" class="section">
+            <h2>現在の防災情報</h2>
+            <div id="weather-alerts">
+                <div class="alert-box alert-warning">気象情報を読み込み中です...</div>
+            </div>
+            <div id="evacuation-info">
+                <div class="alert-box alert-danger">（ここに自治体からの避難情報が表示されます）</div>
+            </div>
+        </section>
+
+        <section id="evacuation-action" class="section">
+            <h2>避難行動を開始する</h2>
+            <a href="map.html" class="action-button">避難経路マップを開く</a>
+        </section>
+
+        <section id="preparedness-menu" class="section">
+            <h2>災害への備え</h2>
+            <div class="menu-grid">
+                <a href="#" class="menu-card">
+                    <h3>備蓄品・防災グッズ</h3>
+                    <p>非常用持ち出し袋や備蓄品のリストを確認します。</p>
+                </a>
+                <a href="#" class="menu-card">
+                    <h3>行動マニュアル</h3>
+                    <p>地震や風水害など、災害別の行動手順を確認します。</p>
+                </a>
+                <a href="map.html" class="menu-card">
+                    <h3>ハザードマップ確認</h3>
+                    <p>地域の危険箇所や避難場所を地図で確認します。</p>
+                </a>
+                <a href="#" class="menu-card">
+                    <h3>地域の情報</h3>
+                    <p>自治体の防災計画や連絡先などを確認します。</p>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <a href="map.html" id="fab-map-button">避難経路マップを開く</a>
+
+    <script>
+        function loadRealtimeInfo() {
+            console.log("防災情報の読み込み処理を開始します...");
+            
+            const alertsDiv = document.getElementById('weather-alerts');
+            
+            // 地域のコード。ここでは例として京都府(260000)を指定。
+            // 東京都は '130000', 大阪府は '270000'
+            // 他の地域コードは https://www.jma.go.jp/bosai/common/const/area.json で確認できます。
+            const areaCode = '260000'; // 京都府
+            const apiUrl = `https://www.jma.go.jp/bosai/warning/data/warning/${areaCode}.json`;
+
+            // fetch API を使って気象庁のデータを非同期で取得
+            fetch(apiUrl)
+                .then(response => {
+                    // ネットワークエラーのチェック
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    // レスポンスをJSONとして解析
+                    return response.json();
+                })
+                .then(data => {
+                    // 警報・注意報のリストを取得
+                    const warnings = data.warnings;
+                    
+                    let html = '';
+                    let hasAlerts = false; // 発表中の警報・注意報があるか
+
+                    if (warnings && warnings.length > 0) {
+                        // 発表されている警報・注意報をループ処理
+                        warnings.forEach(warning => {
+                            // "発表"中のものだけをリストアップ
+                            if (warning.status === '発表') {
+                                hasAlerts = true;
+                                // '警報'という文字が含まれていれば 'alert-danger' (赤)、
+                                // 含まれていなければ 'alert-warning' (黄) を適用
+                                const isWarning = warning.type.includes('警報');
+                                const alertClass = isWarning ? 'alert-danger' : 'alert-warning';
+                                
+                                html += `<div class="alert-box ${alertClass}">${warning.type}</div>`;
+                            }
+                        });
+                    }
+
+                    // 発表時刻とヘッドライン（概要）
+                    const reportTime = new Date(data.reportDatetime).toLocaleString('ja-JP');
+                    const headline = data.headlineText || '（ヘッドライン情報なし）';
+                    
+                    let headerInfo = `
+                        <p style="font-size: 0.9em; text-align: right; margin: 0 0 10px 0;">${reportTime} 発表</p>
+                    `;
+
+                    if (hasAlerts) {
+                        // 発表中の警報/注意報がある場合
+                        alertsDiv.innerHTML = headerInfo + `<p style="font-weight: bold; margin-top: 0;">${headline}</p>` + html;
+                    } else {
+                        // 発表中の警報/注意報がない場合
+                        alertsDiv.innerHTML = headerInfo + '<div class="alert-box alert-success">現在、発表されている警報・注意報はありません。</div>';
+                    }
+                })
+                .catch(error => {
+                    // エラーハンドリング
+                    console.error('気象情報の取得に失敗しました:', error);
+                    let errorMessage = '気象情報の取得に失敗しました。';
+                    
+                    // CORSエラーの場合、ユーザーにわかりやすいメッセージを出す
+                    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+                         errorMessage += '（CORSポリシー違反の可能性があります。ローカルサーバでお試しください）';
+                    }
+                    
+                    alertsDiv.innerHTML = `<div class="alert-box alert-danger">${errorMessage}</div>`;
+                });
+        }
+        
+        // ページが読み込まれたら loadRealtimeInfo 関数を実行
+        window.onload = loadRealtimeInfo;
+    </script>
+
+</body>
+</html>
